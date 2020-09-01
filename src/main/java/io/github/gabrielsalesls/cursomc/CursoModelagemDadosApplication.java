@@ -8,11 +8,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import io.github.gabrielsalesls.cursomc.domain.Categoria;
 import io.github.gabrielsalesls.cursomc.domain.Cidade;
 import io.github.gabrielsalesls.cursomc.domain.Cliente;
 import io.github.gabrielsalesls.cursomc.domain.Endereco;
 import io.github.gabrielsalesls.cursomc.domain.Estado;
+import io.github.gabrielsalesls.cursomc.domain.ItemPedido;
 import io.github.gabrielsalesls.cursomc.domain.Pagamento;
 import io.github.gabrielsalesls.cursomc.domain.PagamentoComBoleto;
 import io.github.gabrielsalesls.cursomc.domain.PagamentoComCartao;
@@ -25,6 +28,7 @@ import io.github.gabrielsalesls.cursomc.repositories.CidadeRepository;
 import io.github.gabrielsalesls.cursomc.repositories.ClienteRepository;
 import io.github.gabrielsalesls.cursomc.repositories.EnderecoRepository;
 import io.github.gabrielsalesls.cursomc.repositories.EstadoRepository;
+import io.github.gabrielsalesls.cursomc.repositories.ItemPedidoRepository;
 import io.github.gabrielsalesls.cursomc.repositories.PagamentoRepository;
 import io.github.gabrielsalesls.cursomc.repositories.PedidoRepository;
 import io.github.gabrielsalesls.cursomc.repositories.ProdutoRepository;
@@ -55,6 +59,9 @@ public class CursoModelagemDadosApplication implements CommandLineRunner{
 	
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+	
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursoModelagemDadosApplication.class, args);
@@ -121,6 +128,18 @@ public class CursoModelagemDadosApplication implements CommandLineRunner{
 		pedidoRepository.saveAll(Arrays.asList(pedido1, pedido2));
 		pagamentoRepository.saveAll(Arrays.asList(pagamento1, pagamento2));
 		
+		ItemPedido ip1 = new ItemPedido(pedido1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(pedido1, p3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(pedido2, p2, 100.00, 1, 800.00);
+		
+		pedido1.getItens().addAll(Arrays.asList(ip1, ip2));
+		pedido2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 		
 		
 	}
